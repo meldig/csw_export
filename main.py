@@ -3,60 +3,37 @@ import xml.etree.ElementTree as ET
 import xlsxwriter
 import requests
 
-# Constantes
-NOM_FICHIER_DIG = "catalogue_interne_dig.xlsx"
-NOM_FICHIER_AGENTS = "catalogue_agents_mel.xlsx"
-
-
-with open("D:\\Documents\\MISSIONS\\Mission_1\\config.json") as jsonFile:
+# Ouverture et chargement du fichier de configuration json contenant les Urls qui sera utilisé via la variable jsonObject
+with open("chemin absolu du fichier de configuration") as jsonFile:
     jsonObject = json.load(jsonFile)
     jsonFile.close()
 
 
-def getRecordById(id):
-    r = requests.get(jsonObject["RECORDBYID"] + id, verify=False)
-    return r
-
-
-def getRecords():
-    with open(jsonObject["PATHS"]["REQUEST"]) as xml:
-        responseCatalogueDIG = requests.post(jsonObject["DIG"]["RECORDS"], data=xml.read(),
+# Fonction qui permet de récupérer toutes les fiches des deux catalogues ainsi que leurs informations
+def getRecords(url):
+    with open(jsonObject[1]["paths"]["nom_du_fichier"]) as xml:
+        response = requests.post(url, data=xml.read(),
                                              headers={"Content-Type": "text/xml"}, verify=False)
 
-    with open(jsonObject["PATHS"]["REQUEST"]) as xml:
-        responseCatalogueAgents = requests.post(jsonObject["AGENTS"]["RECORDS"], data=xml.read(),
-                                                headers={"Content-Type": "text/xml"}, verify=False)
+    root = ET.fromstring(response.content.decode("utf-8"))
 
-    rootCatalogueDIG = ET.fromstring(responseCatalogueDIG.content.decode("utf-8"))
-    rootCatalogueAgents = ET.fromstring(responseCatalogueAgents.content.decode("utf-8"))
-
-    recordsCatalogueDIG = rootCatalogueDIG.findall(jsonObject["PATHS"]["RECORD_TAG_PATH"])
-    recordsCatalogueAgents = rootCatalogueAgents.findall(jsonObject["PATHS"]["RECORD_TAG_PATH"])
-
-    WriteInExcelFile(recordsCatalogueDIG, NOM_FICHIER_DIG)
-    WriteInExcelFile(recordsCatalogueAgents, NOM_FICHIER_AGENTS)
+    return root.findall(jsonObject[2]["tags"]["nom_balise"])
 
 
-def WriteInExcelFile(records, fileName):
+# Fonction qui permet de créer les fichiers excel et d'écrire les informations sur les fiches dedans
+def writeInExcelFile(records, filePath, url):
     row = 1
-    workbook = xlsxwriter.Workbook(jsonObject["PATHS"]["EXCEL"] + fileName)
+    workbook = xlsxwriter.Workbook(filePath)
     worksheet = workbook.add_worksheet()
 
     worksheet.write(0, 0, 'Titre', workbook.add_format({'bold': True}))
     worksheet.write(0, 1, 'URL', workbook.add_format({'bold': True}))
-    worksheet.write(0, 2, 'Export XML', workbook.add_format({'bold': True}))
     worksheet.set_column(0, 0, 140)
     worksheet.set_column(1, 1, 120)
-    worksheet.set_column(2, 2, 120)
-
-    if fileName == NOM_FICHIER_DIG:
-        url = jsonObject["DIG"]["FICHE"]
-    elif fileName == NOM_FICHIER_AGENTS:
-        url = jsonObject["AGENTS"]["FICHE"]
 
     for record in records:
-        id = record.find(jsonObject["PATHS"]["IDENTIFIER"])
-        title = record.find(jsonObject["PATHS"]["TITLE"])
+        id = record.find(jsonObject[2]["tags"]["nom_balise"])
+        title = record.find(jsonObject[2]["tags"]["nom_balise"])
 
         worksheet.write(row, 0, title.text)
         worksheet.write(row, 1, url + id.text.split(':')[-1])
@@ -66,4 +43,5 @@ def WriteInExcelFile(records, fileName):
     workbook.close()
 
 
-getRecords()
+records = getRecords(jsonObject[0]["urls"]["records"])
+writeInExcelFile(records, jsonObject[2]["paths"]["nom_du_fichier"], jsonObject[0]["urls"]["fiche"])
