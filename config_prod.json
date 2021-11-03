@@ -1,16 +1,24 @@
-{
-	"catalogue": {
-		"nom_catalogue": {
+[
+	{
+		"type": "catalogue",
+		"name": "nom_catalogue",
+		"urls": {
 			"base": "url de base vers l'api",
 			"records": "url qui permet de faire la requête GetRecords",
 			"fiche": "url qui permet d'accéder à une fiche"
 		}
 	},
-	"fichier": {
-		"request": "chemin du fichier qui contient le corps de la requête GetRecords",
-		"nom_fichier": "chemin du fichier excel",
+	{
+		"type": "fichier",
+		"paths": {
+			"request": "chemin du fichier qui contient le corps de la requête GetRecords",
+			"nom_fichier": "chemin du fichier excel"
+		}
 	},
-	"balise_xml": {
-		"nom_balise": "{namespace}nom_balise",
+	{
+		"type": "balise_xml",
+		"tags": {
+			"nom_balise": "{namespace}nom_balise"
+		}
 	}
-}
+]
