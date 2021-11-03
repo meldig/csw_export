@@ -5,7 +5,7 @@ On va se servir du protocole CSW et de ses différentes méthodes.
 
 ## Script
 
-Le fichier main.py contient le code exécutable. On y retrouve plusieurs fonctions qui remplissent des tâches précises.
+Le fichier csw_export.py contient le code exécutable. On y retrouve plusieurs fonctions qui remplissent des tâches précises.
 
 ##### getRecords
 
@@ -25,7 +25,7 @@ Dans cette fonction, on itère sur tous les éléments de "records" pour écrire
 ## Configuration
 
 Le fichier de configuration contient des urls, des chemins de fichiers et des balises XML que l'on utilise dans le script. Il est utile pour ne pas avoir à mettre ces informations en dur dans le code et donc améliorer la lisibilité.
-Le fichier de configuration est chargé en premier dans le fichier main.py.
+Le fichier de configuration est chargé en premier dans le fichier csw_export.py.
 
 ## Fichier de requête
 
