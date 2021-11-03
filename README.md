@@ -1,6 +1,6 @@
 # csw_export
 
-Le but de ce script est de récupérer toutes les fiches des différents catalogues de la MEL et de mettre en forme certaines informations dans des fichiers excel.
+Le but de ce script est de récupérer toutes les fiches des différents catalogues ISOGEO de la MEL et de mettre en forme certaines informations dans des fichiers excel.
 On va se servir du protocole CSW et de ses différentes méthodes.
 
 ## Script
@@ -16,7 +16,7 @@ Elle attend un paramètre :
 
 ##### writeInExcelFile
 
-La fonction WriteInExcelFile permet de créer et d'écrire un fichier excel. Cette fonction attend deux paramètres : 
+La fonction WriteInExcelFile permet de créer et d'écrire un fichier excel. Cette fonction attend trois paramètres : 
 - records : tableau d'éléments provenant de la réponse XML de la méthode GetRecords du protocole CSW
 - filePath : le chemin absolu du fichier excel que l'on veut créer
 - url : l'url de base qui permet d'afficher une fiche en particulier sur le catalogue web
@@ -24,8 +24,7 @@ Dans cette fonction, on itère sur tous les éléments de "records" pour écrire
 
 ## Configuration
 
-Le fichier de configuration contient des urls, des chemins de fichiers et des balises XML que l'on utilise dans le script.
-Il est important de renseigner les valeur de "type" pour savoir à quel type d'information les valeurs correspondent.
+Le fichier de configuration contient des urls, des chemins de fichiers et des balises XML que l'on utilise dans le script. Il est utile pour ne pas avoir à mettre ces informations en dur dans le code et donc améliorer la lisibilité.
 Le fichier de configuration est chargé en premier dans le fichier main.py.
 
 ## Fichier de requête
