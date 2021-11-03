@@ -25,7 +25,10 @@ Dans cette fonction, on itère sur tous les éléments de "records" pour écrire
 ## Configuration
 
 Le fichier de configuration contient des urls, des chemins de fichiers et des balises XML que l'on utilise dans le script. Il est utile pour ne pas avoir à mettre ces informations en dur dans le code et donc améliorer la lisibilité.
+Il est important de ne pas oublier la clé "type" dans chacun des blocs afin de bien identifier quel type d'information nous manipulons.
 Le fichier de configuration est chargé en premier dans le fichier csw_export.py.
+
+L'url qui sert à faire la requête GetRecords peut être trouvé grâce à la méthode GetCapabilities ("lien CSW" dans ISOGEO et balise "<ows:Operation>" avec le paramètre "name='GetRecords'", et on prendra le lien présent dans la balise "<ows:Post>")
 
 ## Fichier de requête
 
