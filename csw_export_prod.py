@@ -18,14 +18,14 @@ with open(input("Veuillez entrer le chemin de votre fichier de configuration : \
 
 # Fonction qui permet de récupérer toutes les fiches des deux catalogues ainsi que leurs informations
 def getRecords(url):
-    with open(jsonObject.get("fichier").get("request")) as xml:
+    with open(list(filter(lambda elt: elt["type"] == "fichier", jsonObject))[0].get("paths").get("request")) as xml:
         # Requête qui va permettre de récupérer les fiches
         response = requests.post(url, data=xml.read(),
                                              headers={"Content-Type": "text/xml"}, verify=False)
 
     # Traitement de la réponse
     root = ET.fromstring(response.content.decode("utf-8"))
-    return root.findall(jsonObject.get("balise_xml").get("record_tag_path"))
+    return root.findall(list(filter(lambda elt: elt["type"] == "balise_xml", jsonObject))[0].get("tags").get("record_tag_path"))
 
 
 # Fonction qui permet de créer les fichiers excel et d'écrire les informations sur les fiches dedans
@@ -43,8 +43,8 @@ def writeInExcelFile(records, filePath, url):
     worksheet.set_column(1, 1, 120)
 
     for record in records:
-        id = record.find(jsonObject.get("balise_xml").get("identifier"))
-        title = record.find(jsonObject.get("balise_xml").get("title"))
+        id = record.find(list(filter(lambda elt: elt["type"] == "balise_xml", jsonObject))[0].get("tags").get("identifier"))
+        title = record.find(list(filter(lambda elt: elt["type"] == "balise_xml", jsonObject))[0].get("tags").get("title"))
 
         # Écriture de l'id et du titre dans la feuille de travail excel
         worksheet.write(row, 0, title.text)
@@ -56,14 +56,12 @@ def writeInExcelFile(records, filePath, url):
 
 
 # Appel des fonctions
-# Dans l'appel à getRecords, on utilise deux fois la fonction findJsonObject. On fait ça car il y a deux éléments qui ont le type
-# catalogue dans le fichier de config et il est donc nécessaire de les identifier par leur nom pour obtenir l'élément que l'on souhaite.
-recordsDig = getRecords(jsonObject.get("catalogue").get("nom_catalogue").get("records"))
+recordsDig = getRecords(list(filter(lambda elt: elt["type"] == "catalogue" and elt["name"] == "nom_catalogue", jsonObject))[0].get("urls").get("records"))
 writeInExcelFile(recordsDig,
-                 jsonObject.get("fichier").get("nom_fichier"),
-                 jsonObject.get("catalogue").get("nom_catalogue").get("fiche"))
+                 list(filter(lambda elt: elt["type"] == "fichier", jsonObject))[0].get("paths").get("nom_fichier"),
+                 list(filter(lambda elt: elt["type"] == "catalogue" and elt["name"] == "nom_catalogue", jsonObject))[0].get("urls").get("fiche"))
 
-recordsAgents = getRecords(jsonObject.get("catalogue").get("nom_catalogue").get("records"))
+recordsAgents = getRecords(list(filter(lambda elt: elt["type"] == "catalogue" and elt["name"] == "nom_catalogue", jsonObject))[0].get("urls").get("records"))
 writeInExcelFile(recordsAgents,
-                 jsonObject.get("fichier").get("nom_fichier"),
-                 jsonObject.get("catalogue").get("nom_catalogue").get("fiche"))
+                 list(filter(lambda elt: elt["type"] == "fichier", jsonObject))[0].get("paths").get("nom_fichier"),
+                 list(filter(lambda elt: elt["type"] == "catalogue" and elt["name"] == "nom_catalogue", jsonObject))[0].get("urls").get("fiche"))
